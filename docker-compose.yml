@@ -1,0 +1,16 @@
+services:
+  kode:
+    build: .
+    container_name: kode
+    restart: unless-stopped
+    ports:
+      - "4009:4009"
+    environment:
+      - NODE_ENV=production
+      - PORT=4009
+      - DATABASE_PATH=/app/data/kode.db
+    volumes:
+      - kode_data:/app/data
+
+volumes:
+  kode_data:

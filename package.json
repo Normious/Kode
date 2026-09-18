@@ -1,0 +1,26 @@
+{
+  "name": "kode",
+  "version": "1.0.0",
+  "description": "QR code generator & scanner API",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node src/migrate.js",
+    "seed": "node src/seed.js",
+    "test:local": "node scripts/test-local.js"
+  },
+  "dependencies": {
+    "fastify": "^4.28.0",
+    "@fastify/cors": "^9.0.0",
+    "@fastify/helmet": "^11.0.0",
+    "@fastify/multipart": "^8.2.0",
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^16.4.5",
+    "jsqr": "^1.4.0",
+    "pino-pretty": "^11.0.0",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.33.4"
+  }
+}
