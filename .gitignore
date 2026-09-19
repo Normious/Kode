@@ -3,3 +3,4 @@ data/*.db*
 .git/
 coverage/
 *.log
+.env

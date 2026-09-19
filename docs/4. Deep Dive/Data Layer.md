@@ -65,7 +65,7 @@ query path is covered. `UNIQUE(project_id, date)` makes the rollup upsert-safe.
 - `getProjectByApiKey`: single indexed lookup gated on `is_active`.
 - `logHistory`: truncates preview to 200 chars, inserts the journal row, then
   upserts today's rollup (`generated` = non-scan success, `scanned` = scan
-  success, `failed` = any failure). Auditing never throws past the caller —
+  success, `failed` = any failure). Auditing never throws past the caller:
   route handlers call it synchronously inside try/catch flows.
 - `listHistory`: dynamic `WHERE` from optional filters + `LIKE` search, with
   separate `COUNT(*)` for pagination.

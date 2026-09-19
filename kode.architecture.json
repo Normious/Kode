@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Kode: QR Generator and Scanner",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "generate-path", "label": "Generate path", "focus": ["clients", "api", "generate", "engine"], "note": "Data in, QR image out through the generation routes." },
+      { "id": "scan-path", "label": "Scan path", "focus": ["clients", "api", "scan", "engine"], "note": "Uploaded image in, decoded data out via multi-pass decode." },
+      { "id": "tenant-data", "label": "Tenants and audit", "focus": ["auth", "db", "insights"], "note": "Keys resolve tenants; every op is audited and rolled up." }
+    ]
+  },
+  "components": [
+    { "id": "clients", "type": "external", "label": "Microservices", "sublabel": "Dobadoba · Gig4Gig · FuM · AaaS · Pgi · Shop A", "pos": [40, 300], "size": [180, 54] },
+    { "id": "api", "type": "backend", "label": "Fastify API", "sublabel": "7 routes · :4009", "pos": [250, 300], "size": [140, 54] },
+    { "id": "auth", "type": "security", "label": "Key Auth", "sublabel": "X-API-Key hook", "pos": [250, 146], "size": [140, 54] },
+    { "id": "generate", "type": "backend", "label": "Generation", "sublabel": "single · preset · batch", "pos": [470, 160], "size": [150, 54] },
+    { "id": "scan", "type": "backend", "label": "Scan", "sublabel": "multipart upload", "pos": [470, 300], "size": [150, 54] },
+    { "id": "insights", "type": "backend", "label": "Presets · History · Stats", "sublabel": "read APIs", "pos": [470, 408], "size": [180, 54] },
+    { "id": "engine", "type": "backend", "label": "QR Engine", "sublabel": "qrcode · jsqr · sharp", "pos": [700, 228], "size": [150, 54] },
+    { "id": "db", "type": "database", "label": "SQLite", "sublabel": "projects · history · daily", "pos": [700, 358], "size": [150, 54] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Kode container · port 4009", "wraps": ["api", "auth", "generate", "scan", "insights", "engine", "db"], "pad": 30 }
+  ],
+  "connections": [
+    { "id": "edge-to-api", "from": "clients", "to": "api", "label": "HTTPS + X-API-Key", "variant": "emphasis", "labelAt": [235, 374] },
+    { "id": "api-to-auth", "from": "api", "to": "auth", "label": "verify key in SQLite", "variant": "security" },
+    { "id": "api-to-generate", "from": "api", "to": "generate" },
+    { "id": "api-to-scan", "from": "api", "to": "scan" },
+    { "id": "api-to-insights", "from": "api", "to": "insights" },
+    { "id": "generate-to-engine", "from": "generate", "to": "engine", "label": "encode PNG/SVG" },
+    { "id": "scan-to-engine", "from": "scan", "to": "engine", "label": "decode pixels" },
+    { "id": "generate-to-db", "from": "generate", "to": "db", "label": "audit + rollup", "labelDy": 48, "fromSide": "right", "toSide": "right", "via": [[860, 187], [860, 385]] },
+    { "id": "scan-to-db", "from": "scan", "to": "db", "label": "audit + rollup" },
+    { "id": "insights-to-db", "from": "insights", "to": "db", "label": "query" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Edge", "items": ["One API key per tenant project", "Health and index stay public"] },
+    { "dot": "emerald", "title": "Engine", "items": ["qrcode encodes PNG, SVG, DataURI", "three-pass decode with jsqr plus sharp", "ten strict preset content builders"] },
+    { "dot": "amber", "title": "Data", "items": ["Every operation writes an audit row", "Daily rollups power usage stats"] }
+  ]
+}
